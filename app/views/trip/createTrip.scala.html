@@ -1,0 +1,17 @@
+@(createTripForm: Form[Trip])
+
+@import helper._
+
+@main("Creer un parcours") {
+
+	<h1>Creer un parcours</h1>
+	
+	 @form(routes.TripController.doCreateTrip()) {
+        
+        @inputText(createTripForm("title")) 
+        
+        <input class="btn btn-primary" type="submit" value="Creer le parcours">
+        
+    }
+	
+}
