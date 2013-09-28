@@ -207,7 +207,7 @@ public class MyUsernamePasswordAuthProvider
 	@Override
 	protected String getVerifyEmailMailingSubject(
 			final MyUsernamePasswordAuthUser user, final Context ctx) {
-		return Messages.get("playauthenticate.password.verify_signup.subject");
+		return Messages.get("apitrip.password.verify_signup.subject");
 	}
 
 	@Override
