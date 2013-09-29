@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Trip;
+import models.User;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -11,7 +12,8 @@ public class TripController extends Controller {
 
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result myTrips() {
-		return ok(views.html.trip.mytrips.render(Trip.all()));
+		final User user = Application.getLocalUser(session());
+		return ok(views.html.trip.mytrips.render(Trip.findByAuthor(user)));
 	}
 
 	static Form<Trip> createTripForm = Form.form(Trip.class);
@@ -27,7 +29,10 @@ public class TripController extends Controller {
 		if (filledForm.hasErrors()) {
 			return badRequest(views.html.trip.createTrip.render(filledForm));
 		} else {
-			Trip.create(filledForm.get());
+			Trip tripToCreate = filledForm.get();
+			tripToCreate.author = Application.getLocalUser(session());
+			
+			Trip.create(tripToCreate);
 			return redirect(routes.TripController.myTrips());
 		}
 	}
@@ -52,7 +57,6 @@ public class TripController extends Controller {
         if(tripForm.hasErrors()) {
             return badRequest(views.html.trip.editTrip.render(id, tripForm.fill(Trip.find.byId(id))));
         }
-        
         
         tripForm.get().update(id);
         flash("success", "Computer " + tripForm.get().title + " has been updated");

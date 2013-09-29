@@ -8,7 +8,9 @@
 	
 	 @form(routes.TripController.doCreateTrip()) {
         
-        @inputText(createTripForm("title")) 
+        @inputText(createTripForm("title"))
+        
+        @textarea(createTripForm("description"))  
         
         <input class="btn btn-primary" type="submit" value="Creer le parcours">
         

@@ -6,15 +6,17 @@ import java.util.Date;
 import models.User;
 import play.Routes;
 import play.data.Form;
-import play.mvc.*;
-import play.mvc.Http.Response;
+import play.mvc.Controller;
 import play.mvc.Http.Session;
 import play.mvc.Result;
 import providers.MyUsernamePasswordAuthProvider;
 import providers.MyUsernamePasswordAuthProvider.MyLogin;
 import providers.MyUsernamePasswordAuthProvider.MySignup;
-
-import views.html.*;
+import views.html.index;
+import views.html.login;
+import views.html.profile;
+import views.html.restricted;
+import views.html.signup;
 import be.objectify.deadbolt.java.actions.Group;
 import be.objectify.deadbolt.java.actions.Restrict;
 

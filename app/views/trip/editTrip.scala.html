@@ -1,17 +1,81 @@
 @(id: Long, editTripForm: Form[Trip])
 
 @import helper._
+@import helper.twitterBootstrap._
+
+@itineraryGroup(field: Field, className: String = "itinerary") = {
+    <div class="@className">
+        
+        <a class="removeItinerary btn">Supprimer</a>
+
+        @inputText(
+            field("title"), 
+            '_title -> "title"
+        )
+
+    </div>
+}
 
 @main("Editer le parcours") {
 
 	<h1>Editer le parcours</h1>
 	
-	 @form(routes.TripController.doEditTrip(id)) {
+	 @form(action = routes.TripController.doEditTrip(id), 'id -> "editTripForm") {
+	<fieldset>
+	
         
         @inputText(editTripForm("title")) 
+        
+        @textarea(editTripForm("description")) 
+        
+        
+	</fieldset>
+        
+    <fieldset>
+            <legend>Itineraires</legend>
+            
+             @repeat(editTripForm("itineries")) { editItineryForm =>
+        
+       			@itineraryGroup(editItineryForm)
+                
+       		}
+        
+
+        	@itineraryGroup(
+        		editTripForm("itineries[x]"),
+            	className = "itinerary_template"
+        	)
+        
+        	<div class="manage">
+        		<a class="addItinerary btn">Ajouter un itineraire</a>
+        	</div>
+        
+     </fieldset>
         
         <input class="btn btn-primary" type="submit" value="Sauvegarder le parcours">
         
     }
 	
 }
+
+    <script type="text/javascript" charset="utf-8">
+    
+    	$('.addItinerary').live('click', function(e) {
+        	var template = $('.itinerary_template');
+        	template.before('<div class="itinerary">' + template.html() + '</div>');
+            renumber();
+    	})
+    	
+        $('#editTripForm').submit(function() {
+            $('.itinerary_template').remove()
+        })
+    	
+        var renumber = function(phones) {
+            $('.itinerary').each(function(i) {
+                $('input', this).each(function() {
+                    $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
+                })
+            })
+        }
+    
+    </script>
