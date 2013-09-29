@@ -22,6 +22,7 @@ create table location (
   id                        bigint not null,
   itineray_id               bigint not null,
   title                     varchar(255),
+  descripion                varchar(255),
   constraint pk_location primary key (id))
 ;
 

@@ -3,88 +3,41 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@itineraryGroup(field: Field, className: String = "itinerary") = {
-    <div class="@className">
-        
-        <a class="removeItinerary btn">Supprimer</a>
-
-        @inputText(
-            field("title"), 
-            '_title -> "title"
-        )
-        
-        <div class="locations">
-        
-            @repeat(field("locations"), min = 1) { location =>
-                
-                @locationField(location("title"))
-    
-            }
-            
-            @locationField(
-                field("locations[x].title"),
-                className = "location_template"
-            )
-
-            
-            <div class="clearfix">
-                <div class="input">
-                    <a class="addLocation btn">Ajouter une location</a>
-                </div>
-            </div>
-        
-        </div>
-
-    </div>
-}
-
-@locationField(field: Field, className: String = "location") = {
-    @input(field, '_label -> "Location", '_class -> className) { (id, name, value, _) =>
-        <input type="text" name="@name" value="@value"> 
-        <a class="removeLocation btn">Remove</a>
-    }
-}
-
 @main("Editer le parcours") {
 
 	<h1>Editer le parcours</h1>
 	
-	 @form(action = routes.TripController.doEditTrip(id), 'id -> "editTripForm") {
-	<fieldset>
+	<div id="login" class="row">
+        <div class="col-md-6">
 	
-        
-        @inputText(editTripForm("title")) 
-        
-        @textarea(editTripForm("description")) 
-        
-        
-	</fieldset>
-        
-    <fieldset>
-            <legend>Itineraires</legend>
-            
-             @repeat(editTripForm("itineries")) { editItineryForm =>
-        
-       			@itineraryGroup(editItineryForm)
-                
-       		}
+	 	@form(action = routes.TripController.doEditTrip(id), 'id -> "editTripForm") {
+	 	
+	 	<div class="form-group">
+       		@inputText(editTripForm("title"), 'class -> "form-control") 
+	 	</div>
+
+        <div class="form-group">
+        	@textarea(editTripForm("description"), 'class -> "form-control", 'rows -> "3")  
+        </div>	
+         	
+        @repeat(editTripForm("itineries"), min = 1) { editItineryForm =>
+       		@itineraryGroup(editItineryForm)
+       	}
+
+        @itineraryGroup(
+        	editTripForm("itineries[x]"),
+            className = "itinerary_template"
+        )
         
 
-        	@itineraryGroup(
-        		editTripForm("itineries[x]"),
-            	className = "itinerary_template"
-        	)
+        <a class="addItinerary btn btn-success">Ajouter un itineraire</a>
         
-        	<div class="manage">
-        		<a class="addItinerary btn">Ajouter un itineraire</a>
-        	</div>
-        
-     </fieldset>
+        </br></br>
         
         <input class="btn btn-primary" type="submit" value="Sauvegarder le parcours">
-        
-    }
-	
+    	}
+     	</div>
+	</div>	
 }
 
     <script type="text/javascript" charset="utf-8">
@@ -108,8 +61,9 @@
         
         $('.addLocation').live('click', function(e) {
             var locations = $(this).parents('.locations')
-            var template = $('.location_template', locations)
-            template.before('<div class="location">' + template.html() + '</div>')
+            var template = $('.location_template')
+            
+            template.before('<div class="location ">' + template.html() + '</div>')
             renumber(locations)
         })        
     	
@@ -130,3 +84,41 @@
         }
     
     </script>
+    
+  @itineraryGroup(field: Field, className: String = "itinerary") = { 
+    <div class="@className">
+    	<div class="well">   
+    	 
+        <a class="removeItinerary btn btn-danger pull-right">Supprimer</a>
+
+        @inputText(
+            field("title"), 
+            '_title -> "title"
+        )
+        
+        <div class="locations">
+        
+        	@repeat(field("locations"), min = 1) { location =>
+        		@locationField(location("title"))
+        	}
+            
+        	@locationField(
+        		field("locations[x].title"),
+            	className = "location_template"
+        	)
+		</div>
+            
+
+        <a class="addLocation btn btn-success">Ajouter une destination</a>
+
+	</div>
+
+   </div>
+}
+
+@locationField(field: Field, className: String = "location") = {
+    @input(field, '_label -> "Location", '_class -> className) { (id, name, value, _) =>
+        <input type="text" name="@name" value="@value"> 
+        <a class="removeLocation btn btn-danger">X</a>
+    }
+}
