@@ -5,8 +5,8 @@
 
 create table itineray (
   id                        bigint not null,
+  trip_id                   bigint not null,
   title                     varchar(255),
-  trip_id                   bigint,
   constraint pk_itineray primary key (id))
 ;
 
@@ -16,6 +16,13 @@ create table linked_account (
   provider_user_id          varchar(255),
   provider_key              varchar(255),
   constraint pk_linked_account primary key (id))
+;
+
+create table location (
+  id                        bigint not null,
+  itineray_id               bigint not null,
+  title                     varchar(255),
+  constraint pk_location primary key (id))
 ;
 
 create table security_role (
@@ -78,6 +85,8 @@ create sequence itineray_seq;
 
 create sequence linked_account_seq;
 
+create sequence location_seq;
+
 create sequence security_role_seq;
 
 create sequence token_action_seq;
@@ -92,10 +101,12 @@ alter table itineray add constraint fk_itineray_trip_1 foreign key (trip_id) ref
 create index ix_itineray_trip_1 on itineray (trip_id);
 alter table linked_account add constraint fk_linked_account_user_2 foreign key (user_id) references users (id) on delete restrict on update restrict;
 create index ix_linked_account_user_2 on linked_account (user_id);
-alter table token_action add constraint fk_token_action_targetUser_3 foreign key (target_user_id) references users (id) on delete restrict on update restrict;
-create index ix_token_action_targetUser_3 on token_action (target_user_id);
-alter table trip add constraint fk_trip_author_4 foreign key (author_id) references users (id) on delete restrict on update restrict;
-create index ix_trip_author_4 on trip (author_id);
+alter table location add constraint fk_location_itineray_3 foreign key (itineray_id) references itineray (id) on delete restrict on update restrict;
+create index ix_location_itineray_3 on location (itineray_id);
+alter table token_action add constraint fk_token_action_targetUser_4 foreign key (target_user_id) references users (id) on delete restrict on update restrict;
+create index ix_token_action_targetUser_4 on token_action (target_user_id);
+alter table trip add constraint fk_trip_author_5 foreign key (author_id) references users (id) on delete restrict on update restrict;
+create index ix_trip_author_5 on trip (author_id);
 
 
 
@@ -114,6 +125,8 @@ SET REFERENTIAL_INTEGRITY FALSE;
 drop table if exists itineray;
 
 drop table if exists linked_account;
+
+drop table if exists location;
 
 drop table if exists security_role;
 
@@ -134,6 +147,8 @@ SET REFERENTIAL_INTEGRITY TRUE;
 drop sequence if exists itineray_seq;
 
 drop sequence if exists linked_account_seq;
+
+drop sequence if exists location_seq;
 
 drop sequence if exists security_role_seq;
 

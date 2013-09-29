@@ -58,7 +58,11 @@ public class TripController extends Controller {
             return badRequest(views.html.trip.editTrip.render(id, tripForm.fill(Trip.find.byId(id))));
         }
         
-        tripForm.get().update(id);
+        Trip updatedTrip = tripForm.get();
+        updatedTrip.id = id;
+        
+        Trip.update(updatedTrip);
+        
         flash("success", "Computer " + tripForm.get().title + " has been updated");
 		
 		return redirect(routes.TripController.myTrips());

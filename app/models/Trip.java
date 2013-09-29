@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
+import com.avaje.ebean.Ebean;
+
 @Entity
 public class Trip extends Model {
 
@@ -20,7 +22,7 @@ public class Trip extends Model {
 	@Id
 	public Long id;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	public User author;
 
 	@Required
@@ -45,9 +47,9 @@ public class Trip extends Model {
 	public static void delete(Long id) {
 		find.ref(id).delete();
 	}
-
+	
 	public static void update(Trip trip) {
-		trip.save();
+		Ebean.saveAssociation(trip, "itineries");
+		Ebean.update(trip);
 	}
-
 }

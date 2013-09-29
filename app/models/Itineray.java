@@ -1,10 +1,13 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
-import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 
 @Entity
@@ -16,23 +19,10 @@ public class Itineray extends Model {
 	public Long id;
 
 	public String title;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	public List<Location> locations = new ArrayList<Location>();
 
-	@ManyToOne
-	public Trip trip;
 
-	public static Finder<Long, Itineray> find = new Finder<Long, Itineray>(
-			Long.class, Itineray.class);
-
-	public static void create(Itineray itinery) {
-		itinery.save();
-	}
-
-	public static void delete(Long id) {
-		find.ref(id).delete();
-	}
-
-	public static void update(Itineray itinery) {
-		itinery.save();
-	}
 
 }

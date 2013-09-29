@@ -12,8 +12,37 @@
             field("title"), 
             '_title -> "title"
         )
+        
+        <div class="locations">
+        
+            @repeat(field("locations"), min = 1) { location =>
+                
+                @locationField(location("title"))
+    
+            }
+            
+            @locationField(
+                field("locations[x].title"),
+                className = "location_template"
+            )
+
+            
+            <div class="clearfix">
+                <div class="input">
+                    <a class="addLocation btn">Ajouter une location</a>
+                </div>
+            </div>
+        
+        </div>
 
     </div>
+}
+
+@locationField(field: Field, className: String = "location") = {
+    @input(field, '_label -> "Location", '_class -> className) { (id, name, value, _) =>
+        <input type="text" name="@name" value="@value"> 
+        <a class="removeLocation btn">Remove</a>
+    }
 }
 
 @main("Editer le parcours") {
@@ -66,14 +95,36 @@
             renumber();
     	})
     	
+    	$('.removeItinerary').live('click', function(e) {
+            $(this).parents('.itinerary').remove()
+            renumber()
+        })
+        
+        $('.removeLocation').live('click', function(e) {
+            var locations = $(this).parents('.locations')
+            $(this).parents('.location').remove()
+            renumber(locations)
+        })
+        
+        $('.addLocation').live('click', function(e) {
+            var locations = $(this).parents('.locations')
+            var template = $('.location_template', locations)
+            template.before('<div class="location">' + template.html() + '</div>')
+            renumber(locations)
+        })        
+    	
         $('#editTripForm').submit(function() {
-            $('.itinerary_template').remove()
+            $('.itinerary_template').remove();
+            $('.location_template').remove()
         })
     	
-        var renumber = function(phones) {
+        var renumber = function(locations) {
             $('.itinerary').each(function(i) {
                 $('input', this).each(function() {
                     $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
+                })
+                $('.location input', this).each(function(i) {
+                    $(this).attr('name', $(this).attr('name').replace(/locations\[.+\]/g, 'locations[' + i + ']'))
                 })
             })
         }
