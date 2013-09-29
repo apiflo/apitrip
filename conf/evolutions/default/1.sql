@@ -29,6 +29,12 @@ create table token_action (
   constraint pk_token_action primary key (id))
 ;
 
+create table trip (
+  id                        bigint not null,
+  title                     varchar(255),
+  constraint pk_trip primary key (id))
+;
+
 create table users (
   id                        bigint not null,
   email                     varchar(255),
@@ -65,6 +71,8 @@ create sequence security_role_seq;
 
 create sequence token_action_seq;
 
+create sequence trip_seq;
+
 create sequence users_seq;
 
 create sequence user_permission_seq;
@@ -94,6 +102,8 @@ drop table if exists security_role;
 
 drop table if exists token_action;
 
+drop table if exists trip;
+
 drop table if exists users;
 
 drop table if exists users_security_role;
@@ -109,6 +119,8 @@ drop sequence if exists linked_account_seq;
 drop sequence if exists security_role_seq;
 
 drop sequence if exists token_action_seq;
+
+drop sequence if exists trip_seq;
 
 drop sequence if exists users_seq;
 

@@ -1,0 +1,17 @@
+@(id: Long, editTripForm: Form[Trip])
+
+@import helper._
+
+@main("Editer le parcours") {
+
+	<h1>Editer le parcours</h1>
+	
+	 @form(routes.TripController.doEditTrip(id)) {
+        
+        @inputText(editTripForm("title")) 
+        
+        <input class="btn btn-primary" type="submit" value="Sauvegarder le parcours">
+        
+    }
+	
+}

@@ -1,10 +1,23 @@
-@()
+@(trips: List[Trip])
 
 @import helper._
 
 @main("Mes parcours") {
 
 	<h1>Mes parcours</h1>
+	
+	<ul>
+        @for(trip <- trips) {
+            <li>
+                @trip.title
+                
+                <a href="@routes.TripController.doDeleteTrip(trip.id)" class="btn">Supprimer</a>
+                
+                <a href="@routes.TripController.editTrip(trip.id)" class="btn">Editer</a>
+                
+            </li>
+        }
+    </ul>
 	
 	<a href="@routes.TripController.createTrip()" class="btn btn-primary">Creer un nouveau parcours</a>
 
