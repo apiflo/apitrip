@@ -1,7 +1,6 @@
 @(id: Long, editTripForm: Form[Trip])
 
 @import helper._
-@import helper.twitterBootstrap._
 
 @main("Editer le parcours") {
 
@@ -29,9 +28,7 @@
             		className = "itinerary_template"
         		)
 
-        		<a class="addItinerary btn btn-success">Ajouter un itineraire</a>
-        
-        		</br></br>
+        		<a class="addItinerary btn btn-success" style="display:none">Ajouter un itineraire</a>
         
         		<input class="btn btn-primary" type="submit" value="Sauvegarder le parcours">
     		}
@@ -45,6 +42,9 @@
 	</div>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiu-D3nCTBxJTBXoV_MR03nxvz7BDSr5w&sensor=false&libraries=places"></script>	
 	<script type="text/javascript" charset="utf-8">
+	
+		var locationNb;
+	
     	$('.addItinerary').live('click', function(e) {
         	var template = $('.itinerary_template');
         	template.before('<div class="itinerary">' + template.html() + '</div>');
@@ -76,6 +76,9 @@
         })
     	
         var renumber = function(locations) {
+    		
+    		locationNb = 0;
+    		
             $('.itinerary').each(function(i) {
                 $('input', this).each(function() {
                     $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
@@ -87,6 +90,8 @@
                     	$(this).attr('name', $(this).attr('name').replace(/locations\[.+\]/g, 'locations[' + j + ']'))
                     
                    		if($(this).hasClass("locationField")){
+                   			
+                   			locationNb++;
         					var autocomplete = new google.maps.places.Autocomplete(this);
         					addAutocompleteListener(autocomplete, this, map);
                 		}
@@ -178,12 +183,16 @@
 		}
 		
 		function calculateDirection() {
-			current_pos = new google.maps.LatLng(40.4,-78);
-			end_pos = new google.maps.LatLng(42.356,-78.5794);
+			
+			var size = locationNb-1;
+			
+			start = new google.maps.LatLng($("input[name='itineries[0].locations[0].latitude']").val(),$("input[name='itineries[0].locations[0].longitude']").val());
+			end = new google.maps.LatLng($("input[name='itineries[0].locations["+size+"].latitude']").val(),$("input[name='itineries[0].locations["+size+"].longitude']").val());
+
 			var request = {
-				origin:current_pos,
-				destination:end_pos,
-				travelMode: google.maps.TravelMode.DRIVING
+				origin:start,
+				destination:end,
+				travelMode: google.maps.TravelMode.WALKING 
 			};
 			directionsService.route(request, function(result, status) {
 				if (status == google.maps.DirectionsStatus.OK) {
@@ -199,10 +208,6 @@
 	<div class="@className">
     	<div class="well">   
         	<a class="removeItinerary btn btn-danger pull-right">Supprimer</a>
-        	@inputText(
-            	field("title"), 
-            	'_title -> "title"
-        	)
         
         	<div class="locations">
         
