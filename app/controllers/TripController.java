@@ -1,5 +1,9 @@
 package controllers;
 
+import java.util.Date;
+
+import com.avaje.ebean.Ebean;
+
 import models.Trip;
 import models.User;
 import play.data.Form;
@@ -13,7 +17,7 @@ public class TripController extends Controller {
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result myTrips() {
 		final User user = Application.getLocalUser(session());
-		return ok(views.html.trip.mytrips.render(Trip.findByAuthor(user)));
+		return ok(views.html.trip.mytrips.render(Trip.findCustomTrip(user), Trip.findRequestPublishedTrip(user)));
 	}
 
 	static Form<Trip> createTripForm = Form.form(Trip.class);
@@ -49,6 +53,14 @@ public class TripController extends Controller {
 		Form<Trip> editTripForm = Form.form(Trip.class);
 		return ok(views.html.trip.editTrip.render(id, editTripForm.fill(Trip.find.byId(id))));
 	}
+	
+	public static Result viewMyTrip(Long id) {
+		
+		Trip myTrip = Trip.find.byId(id);
+		
+		return ok(views.html.trip.viewMyTrip.render(myTrip));
+	}
+	
 
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result doEditTrip(Long id) {
@@ -66,6 +78,20 @@ public class TripController extends Controller {
         flash("success", "Computer " + tripForm.get().title + " has been updated");
 		
 		return redirect(routes.TripController.myTrips());
+	}
+	
+	public static Result doRequestPublishedTrip(Long id){
+		
+		Trip trip = Trip.find.byId(id);
+		
+		Trip tripToPublish = trip.duplicate();
+		
+		tripToPublish.requestPublishDate = new Date();
+		tripToPublish.save();
+		
+		return redirect(routes.TripController.myTrips());
+		
+		
 	}
 
 }

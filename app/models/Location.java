@@ -36,4 +36,14 @@ public class Location extends Model {
 		location.save();
 	}
 
+	public Location duplicate() {
+		Location clone =  new Location();
+		clone.title = this.title;
+		clone.latitude = this.latitude;
+		clone.longitude = this.longitude;
+		clone.descripion = this.descripion;
+		
+		return clone;
+	}
+
 }

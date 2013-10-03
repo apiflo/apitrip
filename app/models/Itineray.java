@@ -23,6 +23,18 @@ public class Itineray extends Model {
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<Location> locations = new ArrayList<Location>();
 
+	public Itineray duplicate() {
+		Itineray clone = new Itineray();
+		clone.title = this.title;
+		clone.locations = new ArrayList<Location>();
+		
+		for(Location location : this.locations){
+			clone.locations.add(location.duplicate());
+		}
+		
+		return clone;
+	}
+
 
 
 }
