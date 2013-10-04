@@ -37,7 +37,6 @@
      	</div>
      	<div class="col-md-6">
 			<div id="container">
-				<input id="direction-button" type="button" value="Direction" onClick="calculateDirection()">
 				<div id="map-canvas"></div>
 			</div>
         </div>
@@ -54,14 +53,15 @@
     	})
     	
     	$('.removeItinerary').live('click', function(e) {
-            $(this).parents('.itinerary').remove()
-            renumber()
+            $(this).parents('.itinerary').remove();
+            renumber();
         })
         
         $('.removeLocation').live('click', function(e) {
             var locations = $(this).parents('.locations')
             $(this).parents('.location').remove()
-            renumber(locations)
+            renumber(locations);
+            calculateDirection();
         })
         
         $('.addLocation').live('click', function(e) {
@@ -195,6 +195,10 @@
 		}
 		
 		function calculateDirection() {
+			
+			if(locationSize < 1){
+				return;
+			}
 			
 			start = new google.maps.LatLng($("input[name='itineries[0].locations[0].latitude']").val(),$("input[name='itineries[0].locations[0].longitude']").val());
 			end = new google.maps.LatLng($("input[name='itineries[0].locations["+locationSize+"].latitude']").val(),$("input[name='itineries[0].locations["+locationSize+"].longitude']").val());
