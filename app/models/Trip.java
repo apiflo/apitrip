@@ -15,7 +15,6 @@ import play.db.ebean.Model;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
-import com.avaje.ebean.Expression;
 
 @Entity
 public class Trip extends Model {
@@ -35,6 +34,8 @@ public class Trip extends Model {
 	
 	public Date requestPublishDate;
 	
+	public Date publishedDate;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<Itineray> itineries = new ArrayList<Itineray>();
 
@@ -46,7 +47,7 @@ public class Trip extends Model {
 	}
 	
 	public static List<Trip> findRequestPublishedTrip(final User author) {
-		return find.where().and(Expr.eq("author", author), Expr.isNotNull("requestPublishDate")).findList();
+		return find.where().and(Expr.eq("author", author), Expr.and(Expr.isNotNull("requestPublishDate"),Expr.isNull("publishedDate"))).findList();
 	}
 
 	public static void create(Trip trip) {
@@ -76,6 +77,15 @@ public class Trip extends Model {
 		return clone;
 		
 	
+	}
+
+	public static List<Trip> findRequestPublishedTrip() {
+		return find.where().and(Expr.isNull("publishedDate"), Expr.isNotNull("requestPublishDate")).findList();
+	}
+
+	public static List<Trip> findPublishedTrip(User user) {
+		return find.where().and(Expr.eq("author", user), Expr.isNotNull("publishedDate")).findList();
+
 	}
 	
 }

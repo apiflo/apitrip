@@ -57,6 +57,11 @@ GET   	/perso/:id    				controllers.TripController.viewMyTrip(id: Long)
 
 GET   	/requestpublish/:id   		controllers.TripController.doRequestPublishedTrip(id: Long)
 
+GET   	/admin   					controllers.TripController.admin()
+GET   	/admin/publish/:id  		controllers.TripController.doPublishTrip(id: Long)
+
+
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

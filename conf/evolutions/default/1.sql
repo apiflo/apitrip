@@ -52,6 +52,7 @@ create table trip (
   title                     varchar(255),
   description               varchar(255),
   request_publish_date      timestamp,
+  published_date            timestamp,
   constraint pk_trip primary key (id))
 ;
 

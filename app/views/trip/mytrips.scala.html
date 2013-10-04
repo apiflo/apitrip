@@ -1,4 +1,4 @@
-@(customTrips: List[Trip], requestPublishedTrips : List[Trip])
+@(customTrips: List[Trip], requestPublishedTrips : List[Trip], publishedTrips : List[Trip])
 
 @import helper._
 
@@ -36,5 +36,12 @@
         }
 	
 	<h2>Mes parcours publie</h2>
-
+	
+		  @for(trip <- publishedTrips) {
+            <li>
+                @trip.title
+                
+                
+            </li>
+}
 }

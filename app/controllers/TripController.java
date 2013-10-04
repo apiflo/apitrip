@@ -2,8 +2,6 @@ package controllers;
 
 import java.util.Date;
 
-import com.avaje.ebean.Ebean;
-
 import models.Trip;
 import models.User;
 import play.data.Form;
@@ -17,7 +15,7 @@ public class TripController extends Controller {
 	@Restrict(@Group(Application.USER_ROLE))
 	public static Result myTrips() {
 		final User user = Application.getLocalUser(session());
-		return ok(views.html.trip.mytrips.render(Trip.findCustomTrip(user), Trip.findRequestPublishedTrip(user)));
+		return ok(views.html.trip.mytrips.render(Trip.findCustomTrip(user), Trip.findRequestPublishedTrip(user), Trip.findPublishedTrip(user)));
 	}
 
 	static Form<Trip> createTripForm = Form.form(Trip.class);
@@ -90,8 +88,20 @@ public class TripController extends Controller {
 		tripToPublish.save();
 		
 		return redirect(routes.TripController.myTrips());
+	}
+	
+	public static Result doPublishTrip(Long id){
 		
+		Trip trip = Trip.find.byId(id);
+		trip.publishedDate = new Date();
 		
+		trip.save();
+		
+		return redirect(routes.TripController.admin());
+	}
+	
+	public static Result admin() {
+		return ok(views.html.admin.render(Trip.findRequestPublishedTrip()));
 	}
 
 }
