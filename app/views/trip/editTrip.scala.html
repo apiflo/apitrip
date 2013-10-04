@@ -177,8 +177,10 @@
       				].join(' ');
     			}
 
+    			
     			infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
     			infowindow.open(map, marker);
+    			calculateDirection();
   			});
 		}
 		
@@ -186,9 +188,21 @@
 			
 			start = new google.maps.LatLng($("input[name='itineries[0].locations[0].latitude']").val(),$("input[name='itineries[0].locations[0].longitude']").val());
 			end = new google.maps.LatLng($("input[name='itineries[0].locations["+locationSize+"].latitude']").val(),$("input[name='itineries[0].locations["+locationSize+"].longitude']").val());
+			
+			var waypts = [];
+			
+			for (var i = 1; i < locationSize; i++) {
+				waypts.push({
+					location:new google.maps.LatLng($("input[name='itineries[0].locations["+i+"].latitude']").val(),$("input[name='itineries[0].locations["+i+"].longitude']").val()),
+					stopover:true
+				});
+			}
+			
 			var request = {
 				origin:start,
 				destination:end,
+			    waypoints: waypts,
+			    optimizeWaypoints: true,
 				travelMode: google.maps.TravelMode.WALKING 
 			};
 			directionsService.route(request, function(result, status) {
