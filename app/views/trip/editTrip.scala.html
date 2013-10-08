@@ -268,13 +268,10 @@
         	fieldTitle
         )
         	
-        @inputText(
-        	fieldLatitude
-        )
+        <input type="hidden" class="" name="itineries[x].locations[x].latitude" value="@fieldLatitude.value">	
         
-        @inputText(
-            fieldLongitude
-        )
+        <input type="hidden" class="" name="itineries[x].locations[x].longitude" value="@fieldLongitude.value">	
+
        </div>
  } 
     
