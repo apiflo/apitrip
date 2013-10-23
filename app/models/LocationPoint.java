@@ -19,7 +19,7 @@ public class LocationPoint extends Model {
 	
 	public Float longitude;
 
-	public String descripion;
+	public String description;
 
 	public static Finder<Long, LocationPoint> find = new Finder<Long, LocationPoint>(
 			Long.class, LocationPoint.class);
@@ -41,7 +41,7 @@ public class LocationPoint extends Model {
 		clone.title = this.title;
 		clone.latitude = this.latitude;
 		clone.longitude = this.longitude;
-		clone.descripion = this.descripion;
+		clone.description = this.description;
 		
 		return clone;
 	}

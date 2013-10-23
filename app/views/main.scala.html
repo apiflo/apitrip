@@ -11,7 +11,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="gooditi">
-    <meta name="author" content="Florian Mousseau">
+    <meta name="author" comdntent="Florian Mousseau">
     
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="@routes.Assets.at("js/bootstrap.min.js")"></script>
@@ -47,7 +47,6 @@
     		<ul class="nav navbar-nav navbar-right">
     		@subjectPresentOr() {
           	@defining(Application.getLocalUser(session())) { user =>
-              <li><a href="@routes.Application.profile()">@Messages("apitrip.navigation.profile")</a></li>
               <li><a href="@routes.TripController.myTrips()">Mes parcours</a></li>
               <li><a href="@com.feth.play.module.pa.controllers.routes.Authenticate.logout()">@Messages("apitrip.navigation.logout")</a></li>
             }

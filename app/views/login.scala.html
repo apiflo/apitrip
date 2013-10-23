@@ -1,13 +1,12 @@
 @(loginForm: Form[_])
 
 @import helper._
-@import helper.twitterBootstrap._
 
 @main(Messages("apitrip.login.title"),"login") {
 
 
       <div id="login" class="row">
-        <div class="col-md-6">
+        <div class="col-lg-6">
           <h2>@Messages("apitrip.login.title")</h2>
      		@* Display proprietary login form *@
     		@helper.form(routes.Application.doLogin) {
@@ -26,7 +25,7 @@
 
     	}
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-6">
           <h2>Inscription</h2>
           	<p>Cr&eacute;ez votre compte. Inscrivez-vous maintenant!
 

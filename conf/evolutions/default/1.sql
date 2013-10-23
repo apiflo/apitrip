@@ -3,11 +3,11 @@
 
 # --- !Ups
 
-create table itineray (
+create table itinerary (
   id                        bigint not null,
   trip_id                   bigint not null,
   title                     varchar(255),
-  constraint pk_itineray primary key (id))
+  constraint pk_itinerary primary key (id))
 ;
 
 create table linked_account (
@@ -18,14 +18,14 @@ create table linked_account (
   constraint pk_linked_account primary key (id))
 ;
 
-create table location (
+create table location_point (
   id                        bigint not null,
-  itineray_id               bigint not null,
+  itinerary_id              bigint not null,
   title                     varchar(255),
   latitude                  float,
   longitude                 float,
-  descripion                varchar(255),
-  constraint pk_location primary key (id))
+  description               varchar(255),
+  constraint pk_location_point primary key (id))
 ;
 
 create table security_role (
@@ -86,11 +86,11 @@ create table users_user_permission (
   user_permission_id             bigint not null,
   constraint pk_users_user_permission primary key (users_id, user_permission_id))
 ;
-create sequence itineray_seq;
+create sequence itinerary_seq;
 
 create sequence linked_account_seq;
 
-create sequence location_seq;
+create sequence location_point_seq;
 
 create sequence security_role_seq;
 
@@ -102,12 +102,12 @@ create sequence users_seq;
 
 create sequence user_permission_seq;
 
-alter table itineray add constraint fk_itineray_trip_1 foreign key (trip_id) references trip (id) on delete restrict on update restrict;
-create index ix_itineray_trip_1 on itineray (trip_id);
+alter table itinerary add constraint fk_itinerary_trip_1 foreign key (trip_id) references trip (id) on delete restrict on update restrict;
+create index ix_itinerary_trip_1 on itinerary (trip_id);
 alter table linked_account add constraint fk_linked_account_user_2 foreign key (user_id) references users (id) on delete restrict on update restrict;
 create index ix_linked_account_user_2 on linked_account (user_id);
-alter table location add constraint fk_location_itineray_3 foreign key (itineray_id) references itineray (id) on delete restrict on update restrict;
-create index ix_location_itineray_3 on location (itineray_id);
+alter table location_point add constraint fk_location_point_itinerary_3 foreign key (itinerary_id) references itinerary (id) on delete restrict on update restrict;
+create index ix_location_point_itinerary_3 on location_point (itinerary_id);
 alter table token_action add constraint fk_token_action_targetUser_4 foreign key (target_user_id) references users (id) on delete restrict on update restrict;
 create index ix_token_action_targetUser_4 on token_action (target_user_id);
 alter table trip add constraint fk_trip_author_5 foreign key (author_id) references users (id) on delete restrict on update restrict;
@@ -127,11 +127,11 @@ alter table users_user_permission add constraint fk_users_user_permission_user_0
 
 SET REFERENTIAL_INTEGRITY FALSE;
 
-drop table if exists itineray;
+drop table if exists itinerary;
 
 drop table if exists linked_account;
 
-drop table if exists location;
+drop table if exists location_point;
 
 drop table if exists security_role;
 
@@ -149,11 +149,11 @@ drop table if exists user_permission;
 
 SET REFERENTIAL_INTEGRITY TRUE;
 
-drop sequence if exists itineray_seq;
+drop sequence if exists itinerary_seq;
 
 drop sequence if exists linked_account_seq;
 
-drop sequence if exists location_seq;
+drop sequence if exists location_point_seq;
 
 drop sequence if exists security_role_seq;
 

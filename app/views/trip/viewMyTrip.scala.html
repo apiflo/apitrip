@@ -7,10 +7,18 @@
 	<h1>@myTrip.title</h1>
 	
 	<div id="login" class="row">
-        <div class="col-md-6">
+        <div class="col-lg-6">
+        	@for(itinerary <- myTrip.itineries) {
+          		@for(location <- itinerary.locations) {
+        			<h3>@location.title</h3>
+        			<p>@location.description</p>
+        		}      	
+        	}
+        </div>
+        <div class="col-lg-6">
         
         </div>
-      </div>
+     </div>
 	
 
 }
