@@ -81,17 +81,17 @@
     		
     		
             $('.itinerary').each(function(i) {
-                $('input', this).each(function() {
+                $('input, textarea', this).each(function() {
                     $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
                 })
                 
                 $('.location', this).each(function(j) {
-                	$('input', this).each(function(k) {
+                	$('input, textarea', this).each(function(k) {
                 		
                     	$(this).attr('name', $(this).attr('name').replace(/locations\[.+\]/g, 'locations[' + j + ']'))
                    		locationSize = j;
                     
-                   		if($(this).hasClass("locationField")){
+                   		if($(this).hasClass("locationFieldText")){
                    			
         					var autocomplete = new google.maps.places.Autocomplete(this);
         					addAutocompleteListener(autocomplete, this, map);
@@ -240,13 +240,15 @@
         			@locationGroup(
         				location("latitude"),
         				location("longitude"),
-        				location("title"))
+        				location("title"),
+        				location("description"))
         		}
             
         		@locationGroup(
         			field("locations[x].latitude"),
         			field("locations[x].longitude"),
         			field("locations[x].title"),
+        			field("locations[x].description"),
             		className = "location_template"
         		)
 			</div>
@@ -257,17 +259,20 @@
 
 @locationField(field: Field) = {
     @input(field) { (id, name, value, _) =>
-        <input class="locationField" type="text" name="@name" value="@value">
+        <input class="locationFieldText" type="text" name="@name" value="@value">
         <a class="removeLocation btn btn-danger">X</a>
     }
 }
 
-@locationGroup(fieldLatitude: Field, fieldLongitude: Field, fieldTitle: Field, className: String = "location") = {
+@locationGroup(fieldLatitude: Field, fieldLongitude: Field, fieldTitle: Field, fieldDescription: Field, className: String = "location") = {
 	<div class="@className">
     	@locationField(
         	fieldTitle
         )
-        	
+        
+        
+       	<textarea class="" name="itineries[x].locations[x].description">@fieldDescription.value</textarea>	
+        
         <input type="hidden" class="" name="itineries[x].locations[x].latitude" value="@fieldLatitude.value">	
         
         <input type="hidden" class="" name="itineries[x].locations[x].longitude" value="@fieldLongitude.value">	
