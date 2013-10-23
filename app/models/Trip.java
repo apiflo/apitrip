@@ -37,7 +37,7 @@ public class Trip extends Model {
 	public Date publishedDate;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	public List<Itineray> itineries = new ArrayList<Itineray>();
+	public List<Itinerary> itineries = new ArrayList<Itinerary>();
 
 	public static Finder<Long, Trip> find = new Finder<Long, Trip>(Long.class,
 			Trip.class);
@@ -69,8 +69,8 @@ public class Trip extends Model {
 		clone.author = this.author;
 		clone.title = this.title;
 		clone.description = this.description;
-		this.itineries = new ArrayList<Itineray>();
-		for(Itineray itineray : this.itineries){
+		this.itineries = new ArrayList<Itinerary>();
+		for(Itinerary itineray : this.itineries){
 			clone.itineries.add(itineray.duplicate());
 		}
 		

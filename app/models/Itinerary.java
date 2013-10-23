@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 import play.db.ebean.Model;
 
 @Entity
-public class Itineray extends Model {
+public class Itinerary extends Model {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,14 +21,14 @@ public class Itineray extends Model {
 	public String title;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	public List<Location> locations = new ArrayList<Location>();
+	public List<LocationPoint> locations = new ArrayList<LocationPoint>();
 
-	public Itineray duplicate() {
-		Itineray clone = new Itineray();
+	public Itinerary duplicate() {
+		Itinerary clone = new Itinerary();
 		clone.title = this.title;
-		clone.locations = new ArrayList<Location>();
+		clone.locations = new ArrayList<LocationPoint>();
 		
-		for(Location location : this.locations){
+		for(LocationPoint location : this.locations){
 			clone.locations.add(location.duplicate());
 		}
 		

@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import play.db.ebean.Model;
 
 @Entity
-public class Location extends Model {
+public class LocationPoint extends Model {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,10 +21,10 @@ public class Location extends Model {
 
 	public String descripion;
 
-	public static Finder<Long, Location> find = new Finder<Long, Location>(
-			Long.class, Location.class);
+	public static Finder<Long, LocationPoint> find = new Finder<Long, LocationPoint>(
+			Long.class, LocationPoint.class);
 
-	public static void create(Location location) {
+	public static void create(LocationPoint location) {
 		location.save();
 	}
 
@@ -32,12 +32,12 @@ public class Location extends Model {
 		find.ref(id).delete();
 	}
 
-	public static void update(Location location) {
+	public static void update(LocationPoint location) {
 		location.save();
 	}
 
-	public Location duplicate() {
-		Location clone =  new Location();
+	public LocationPoint duplicate() {
+		LocationPoint clone =  new LocationPoint();
 		clone.title = this.title;
 		clone.latitude = this.latitude;
 		clone.longitude = this.longitude;
