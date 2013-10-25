@@ -49,7 +49,7 @@ apitrip.change_password.success=Mot de passe changé avec succès.
 apitrip.password.signup.error.passwords_not_same=Les mots de passe ne correspondent pas.
 apitrip.password.login.unknown_user_or_pw=Utilisateur et mot de passe inconnus.
 
-apitrip.password.verify_signup.subject=Apitrip: Finaliser votre enregistrement
+apitrip.password.verify_signup.subject=Confirmer mon compte
 apitrip.password.verify_email.subject=PlayAuthenticate: Confirmer votre email
 apitrip.password.reset_email.subject=PlayAuthenticate: Comment changer votre mot de passe.
 
