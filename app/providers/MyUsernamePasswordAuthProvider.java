@@ -1,10 +1,13 @@
 package providers;
 
-import com.feth.play.module.mail.Mailer.Mail.Body;
-import com.feth.play.module.pa.PlayAuthenticate;
-import com.feth.play.module.pa.providers.password.UsernamePasswordAuthProvider;
-import com.feth.play.module.pa.providers.password.UsernamePasswordAuthUser;
-import controllers.routes;
+import static play.data.Form.form;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import models.LinkedAccount;
 import models.TokenAction;
 import models.TokenAction.Type;
@@ -15,18 +18,18 @@ import play.data.Form;
 import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.MinLength;
 import play.data.validation.Constraints.Required;
+import play.data.validation.ValidationError;
 import play.i18n.Lang;
 import play.i18n.Messages;
 import play.mvc.Call;
 import play.mvc.Http.Context;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.feth.play.module.mail.Mailer.Mail.Body;
+import com.feth.play.module.pa.PlayAuthenticate;
+import com.feth.play.module.pa.providers.password.UsernamePasswordAuthProvider;
+import com.feth.play.module.pa.providers.password.UsernamePasswordAuthUser;
 
-import static play.data.Form.form;
+import controllers.routes;
 
 public class MyUsernamePasswordAuthProvider
 		extends
@@ -97,13 +100,13 @@ public class MyUsernamePasswordAuthProvider
 
 		@Required
 		public String name;
-
-		public String validate() {
-			if (password == null || !password.equals(repeatPassword)) {
-				return Messages
-						.get("playauthenticate.password.signup.error.passwords_not_same");
-			}
-			return null;
+		
+		public List<ValidationError> validate() {
+		    List<ValidationError> errors = new ArrayList<ValidationError>();
+		    if (password == null || !password.equals(repeatPassword)){
+		        errors.add(new ValidationError("repeatPassword", "Les mots de passe ne sont pas identiques"));
+		    }
+		    return errors.isEmpty() ? null : errors;
 		}
 	}
 
