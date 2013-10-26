@@ -1,0 +1,23 @@
+@(trips: List[Trip])
+
+@import helper._
+
+	<ul>
+        @for(trip <- trips) {
+            <li>
+                
+                <a href="@routes.TripController.viewMyTrip(trip.id)" class="btn">
+                @trip.title
+                <p>
+                 @trip.description
+                </p>
+                </a>
+                
+                <a href="@routes.TripController.doDeleteTrip(trip.id)" class="btn">Supprimer</a>
+                
+                <a href="@routes.TripController.editTrip(trip.id)" class="btn">Editer</a>
+                
+                
+            </li>
+        }
+    </ul>
