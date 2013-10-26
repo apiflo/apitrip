@@ -3,6 +3,7 @@ package controllers;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import models.Trip;
 import models.User;
 import play.Routes;
 import play.data.Form;
@@ -31,7 +32,7 @@ public class Application extends Controller {
 	public static final String USER_ROLE = "user";
 	
 	public static Result index() {
-		return ok(index.render());
+		return ok(index.render(Trip.allPublishedTrip()));
 	}
 
 	public static User getLocalUser(final Session session) {

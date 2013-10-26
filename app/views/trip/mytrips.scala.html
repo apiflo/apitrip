@@ -8,40 +8,17 @@
 	
 	<h2>Mes parcours personnalise</h2>
 	
-	<ul>
-        @for(trip <- customTrips) {
-            <li>
-                @trip.title
-                
-                <a href="@routes.TripController.doDeleteTrip(trip.id)" class="btn">Supprimer</a>
-                
-                <a href="@routes.TripController.editTrip(trip.id)" class="btn">Editer</a>
-                
-                <a href="@routes.TripController.viewMyTrip(trip.id)" class="btn">Visualiser</a>
-                
-            </li>
-        }
-    </ul>
+	@_listTrip(customTrips) 
+
 	
 	<a href="@routes.TripController.createTrip()" class="btn btn-primary">Creer un nouveau parcours</a>
 
 	<h2>Mes parcours en attente de publication</h2>
 	
-	        @for(trip <- requestPublishedTrips) {
-            <li>
-                @trip.title
-                
-                
-            </li>
-        }
+	@_listTrip(requestPublishedTrips) 
 	
 	<h2>Mes parcours publie</h2>
 	
-		  @for(trip <- publishedTrips) {
-            <li>
-                @trip.title
-                
-                
-            </li>
-}
+	@_listTrip(publishedTrips) 
+
 }

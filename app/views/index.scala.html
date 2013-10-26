@@ -1,3 +1,8 @@
-@main(Messages("apitrip.index.title")) {
+@(trips: List[Trip])
+
+@main("Gooditi") {
+
+	@trip._listTrip(trips) 
+
 
 }

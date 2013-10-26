@@ -88,4 +88,8 @@ public class Trip extends Model {
 
 	}
 	
+	public static List<Trip> allPublishedTrip() {
+		return find.where(Expr.isNotNull("publishedDate")).findList();
+
+	}
 }
