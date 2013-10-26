@@ -8,10 +8,15 @@
 	
 	<div id="login" class="row">
         <div class="col-lg-6">
+                        
+                <a href="@routes.TripController.doDeleteTrip(myTrip.id)" class="btn">Supprimer</a>
+                
+                <a href="@routes.TripController.editTrip(myTrip.id)" class="btn">Editer</a>
         	@for(itinerary <- myTrip.itineries) {
           		@for(location <- itinerary.locations) {
         			<h3>@location.title</h3>
         			<p>@location.description</p>
+        			
         		}      	
         	}
         </div>

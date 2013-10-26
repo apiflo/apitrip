@@ -2,22 +2,13 @@
 
 @import helper._
 
-	<ul>
-        @for(trip <- trips) {
-            <li>
-                
-                <a href="@routes.TripController.viewMyTrip(trip.id)" class="btn">
-                @trip.title
-                <p>
-                 @trip.description
-                </p>
-                </a>
-                
-                <a href="@routes.TripController.doDeleteTrip(trip.id)" class="btn">Supprimer</a>
-                
-                <a href="@routes.TripController.editTrip(trip.id)" class="btn">Editer</a>
-                
-                
-            </li>
-        }
-    </ul>
+@for(trip <- trips) {
+<div>
+	<a href="@routes.TripController.viewMyTrip(trip.id)" class="btn">
+		<h3>@trip.title</h3>
+		<p>
+			@trip.description
+    	</p>
+    </a>
+</div>
+}
