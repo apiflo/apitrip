@@ -53,15 +53,14 @@
           mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         
-		var maps;
 		  
 		var directionsService = new google.maps.DirectionsService();
 		var directionsDisplay = new google.maps.DirectionsRenderer();
         
-	
+		
     	$('.addItinerary').live('click', function(e) {
         	var template = $('.itinerary_template');
-        	template.before('<div class="itinerary">' + template.html() + '</div>');
+        	template.before('<div class="row itinerary">' + template.html() + '</div>');
             renumber();
     	})
     	
@@ -106,6 +105,7 @@
                             mapOptions));
                 })
                 
+                $('.itinerary').each(function(a) {
                 $('.location', this).each(function(j) {
                 	$('input, textarea', this).each(function(k) {
                 		
@@ -115,10 +115,11 @@
                    		if($(this).hasClass("locationFieldText")){
                    			
         					var autocomplete = new google.maps.places.Autocomplete(this);
-        					addAutocompleteListener(autocomplete, this, maps[0]);
+        					addAutocompleteListener(autocomplete, this, maps[a]);
                 		}
                     })
                 })
+            	})
             })
         }
     	
