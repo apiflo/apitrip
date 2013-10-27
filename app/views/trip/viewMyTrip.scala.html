@@ -4,8 +4,8 @@
 
 @main("Visualiser le parcours") {
 
-	@_viewTripButtons(myTrip)
 	@_heading(myTrip.title)
+	@_viewTripButtons(myTrip)
 	
 	<div id="login" class="row">
         <div class="col-lg-6">
@@ -19,7 +19,7 @@
         </div>
         <div class="col-lg-6">
  			<div id="container">
-				<div id="map-canvas"></div>
+				<div class="map-canvas" id="map-canvas-1"></div>
 			</div>       
         </div>
      </div>
@@ -32,10 +32,11 @@
     		var paris = new google.maps.LatLng(48.853, 2.35);
             var mapOptions = {
               center: paris,
+              disableDefaultUI: true, draggable: false, zoomControl: false, scrollwheel: false, disableDoubleClickZoom: true,
               zoom: 14,
               mapTypeId: google.maps.MapTypeId.ROADMAP
             };
-            map = new google.maps.Map(document.getElementById("map-canvas"),
+            map = new google.maps.Map(document.getElementById("map-canvas-1"),
                 mapOptions);
     		
     		directionsDisplay.setMap(map);

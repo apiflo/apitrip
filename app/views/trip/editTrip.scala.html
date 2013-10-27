@@ -22,42 +22,42 @@
 
         			@textarea(editTripForm("description"),
         			'placeholder -> "Description",
-        			 'class -> "form-control",
-        			  'rows -> "3")  
+        			'class -> "form-control",
+        			'rows -> "3")  
        		</div>	
 		</div>
 	 		
-	 		
-	<div class="row">
-	
-        <div class="col-lg-6">
-	
-        		@repeat(editTripForm("itineries"), min = 1) { editItineryForm =>
-       				@itineraryGroup(editItineryForm)
-       			}
+        @repeat(editTripForm("itineries"), min = 1) { editItineryForm =>
+       		@itineraryGroup(editItineryForm)
+       	}
 
-        		@itineraryGroup(
-        			editTripForm("itineries[x]"),
-            		className = "itinerary_template"
-        		)
-
-        		<a class="addItinerary btn btn-success" style="display:none"><i class="icon-plus"></i>Ajouter un itineraire</a>
+        @itineraryGroup(
+       		editTripForm("itineries[x]"),
+            className = "itinerary_template"
+       	)
         
-
-     	</div>
-     	<div class="col-lg-6">
-			<div id="container">
-				<div id="map-canvas"></div>
-			</div>
-        </div>
-	</div>
-	
-	@_editTripButtons(id)
-    		}
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiu-D3nCTBxJTBXoV_MR03nxvz7BDSr5w&sensor=false&libraries=places"></script>	
+        <a class="addItinerary btn btn-success"><i class="icon-plus"></i> Ajouter un itineraire</a>
+        
+		@_editTripButtons(id)
+    }
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiu-D3nCTBxJTBXoV_MR03nxvz7BDSr5w&sensor=false&language=fr&libraries=places"></script>	
 	<script type="text/javascript" charset="utf-8">
 	
 		var locationSize = 0;
+		
+		var paris = new google.maps.LatLng(48.853, 2.35);
+        var mapOptions = {
+          center: paris,
+          disableDefaultUI: true, draggable: false, zoomControl: false, scrollwheel: false, disableDoubleClickZoom: true,
+          zoom: 14,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        
+		var maps;
+		  
+		var directionsService = new google.maps.DirectionsService();
+		var directionsDisplay = new google.maps.DirectionsRenderer();
+        
 	
     	$('.addItinerary').live('click', function(e) {
         	var template = $('.itinerary_template');
@@ -74,7 +74,7 @@
             var locations = $(this).parents('.locations')
             $(this).parents('.location').remove()
             renumber(locations);
-            calculateDirection();
+            calculateDirection(maps[0]);
         })
         
         $('.addLocation').live('click', function(e) {
@@ -92,10 +92,18 @@
     	
         var renumber = function(locations) {
     		
+           	maps = new Array();
+    		
     		
             $('.itinerary').each(function(i) {
                 $('input, textarea', this).each(function() {
                     $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
+                })
+                
+                $('.map-canvas', this).each(function() {
+                    $(this).attr('id', $(this).attr('id').replace(/map-canvas-.+?/g, 'map-canvas-' + i));
+                    maps.push(new google.maps.Map(document.getElementById("map-canvas-"+i),
+                            mapOptions));
                 })
                 
                 $('.location', this).each(function(j) {
@@ -107,7 +115,7 @@
                    		if($(this).hasClass("locationFieldText")){
                    			
         					var autocomplete = new google.maps.places.Autocomplete(this);
-        					addAutocompleteListener(autocomplete, this, map);
+        					addAutocompleteListener(autocomplete, this, maps[0]);
                 		}
                     })
                 })
@@ -115,34 +123,18 @@
         }
     	
        	function initialize() {
-    		var paris = new google.maps.LatLng(48.853, 2.35);
-            var mapOptions = {
-              center: paris,
-              zoom: 14,
-              mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            map = new google.maps.Map(document.getElementById("map-canvas"),
-                mapOptions);
+
+           	renumber(this);
+       		
     		
-    		directionsDisplay.setMap(map);
-    		
-           	$('.locations').each(function(i) {
-           		renumber(this);
-           	})
-           	
            	if(locationSize > 0){
-           		calculateDirection();
+           		calculateDirection(maps[0]);
            	}
          }
        	
     	$(window).load(function(){
     		initialize();
     	});
-	
-		var map;
-		  
-		var directionsService = new google.maps.DirectionsService();
-		var directionsDisplay = new google.maps.DirectionsRenderer();
 	
 		function addAutocompleteListener(autocomplete, input, map) {
 		
@@ -167,14 +159,13 @@
     				pinLocation(infowindow, marker, autocomplete, input, map);
     			} else {
 
-    				calculateDirection();
+    				calculateDirection(map);
     			}
     			
   			});
 		}
 		
 		function pinLocation(infowindow, marker, autocomplete, input, map) {
-			//infowindow.close();
 			marker.setVisible(false);
 			input.className = '';
 			var place = autocomplete.getPlace();
@@ -195,7 +186,9 @@
 
 		}
 		
-		function calculateDirection() {
+		function calculateDirection(map) {
+			
+			directionsDisplay.setMap(map);
 			
 			if(locationSize < 1){
 				return;
@@ -231,11 +224,13 @@
 }
 
 @itineraryGroup(field: Field, className: String = "itinerary") = { 
-	<div class="@className">
-    	<div class="well">   
-        	<a class="removeItinerary btn btn-danger pull-right"><i class="icon-trash"></i> Supprimer la carte</a>
+	<div class="row @className">
+    	<div class="col-lg-6">	
+			<div>
+    			<div class="well">   
+        		<a class="removeItinerary btn btn-danger pull-right"><i class="icon-trash"></i> Supprimer la carte</a>
         
-        	<div class="locations">
+        		<div class="locations">
         
         		@repeat(field("locations"), min = 1) { location =>
         			@locationGroup(
@@ -256,6 +251,14 @@
         	<a class="addLocation btn btn-success"><i class="icon-plus"></i> Ajouter une place</a>
 		</div>
   	</div>
+        		
+     	</div>
+     	<div class="col-lg-6">
+			<div id="container">
+				<div class="map-canvas" id="map-canvas-X"></div>
+			</div>
+        </div>
+	</div>
 }
 
 @locationGroup(fieldLatitude: Field, fieldLongitude: Field, fieldTitle: Field, fieldDescription: Field, className: String = "location") = {
