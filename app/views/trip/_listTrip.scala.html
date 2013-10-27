@@ -3,12 +3,20 @@
 @import helper._
 
 @for(trip <- trips) {
-<div>
-	<a href="@routes.TripController.viewMyTrip(trip.id)" class="btn">
+<!-- <div> -->
+<!-- 	<a href="@routes.TripController.viewMyTrip(trip.id)" class="btn"> -->
+<!-- 		<h3>@trip.title</h3> -->
+<!-- 		<p> -->
+<!-- 			@trip.description -->
+<!--     	</p> -->
+<!--     </a> -->
+<!-- </div> -->
+<div class="col-lg-12 col-sm-12">
+<!-- 	<a href="#" class="btn btn-more btn-mini">More</a> -->
+	<a href="@routes.TripController.viewMyTrip(trip.id)">
 		<h3>@trip.title</h3>
-		<p>
-			@trip.description
-    	</p>
-    </a>
+	</a>
+		<p>@trip.description</p>
+	<div class="content-divider"></div>
 </div>
 }
