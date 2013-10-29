@@ -43,7 +43,7 @@
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiu-D3nCTBxJTBXoV_MR03nxvz7BDSr5w&sensor=false&language=fr&libraries=places"></script>	
 	<script type="text/javascript" charset="utf-8">
 	
-		var locationSize = 0;
+		var locationSize;
 		
 		var paris = new google.maps.LatLng(48.853, 2.35);
         var mapOptions = {
@@ -59,9 +59,10 @@
         
 		
     	$('.addItinerary').live('click', function(e) {
+    		var parentItinerary = $(this).closest(":has(.itinerary)").find('.itinerary');
         	var template = $('.itinerary_template');
-        	template.before('<div class="row itinerary">' + template.html() + '</div>');
-            renumber();
+        	parentItinerary.after('<div class="row itinerary">' + template.html() + '</div>');
+        	renumber();
     	})
     	
     	$('.removeItinerary').live('click', function(e) {
@@ -70,67 +71,70 @@
         })
         
         $('.removeLocation').live('click', function(e) {
-            var locations = $(this).parents('.locations')
-            $(this).parents('.location').remove()
-            renumber(locations);
-            calculateDirection(maps[0]);
+            $(this).parents('.location').remove();
+            renumber();
+            calculateDirection(0);
         })
         
         $('.addLocation').live('click', function(e) {
-            var locations = $(this).parents('.locations')
-            var template = $('.location_template')
-            
-            template.before('<div class="location ">' + template.html() + '</div>')
-            renumber(locations)
+            var template = $('.location_template');
+            var parentLocation = $(this).closest(":has(.location)").find('.location:last');
+
+            parentLocation.after('<div class="location ">' + template.html() + '</div>')
+            renumber()
         })        
     	
         $('#editTripForm').submit(function() {
             $('.itinerary_template').remove();
-            $('.location_template').remove()
+            $('.location_template').remove();
         })
     	
-        var renumber = function(locations) {
+        var renumber = function() {
     		
            	maps = new Array();
-    		
-    		
+           	locationSize = new Array();
+           	var autocomplete;
+           	var input;
+
             $('.itinerary').each(function(i) {
                 $('input, textarea', this).each(function() {
                     $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
                 })
                 
                 $('.map-canvas', this).each(function() {
-                    $(this).attr('id', $(this).attr('id').replace(/map-canvas-.+?/g, 'map-canvas-' + i));
-                    maps.push(new google.maps.Map(document.getElementById("map-canvas-"+i),
-                            mapOptions));
+                    $(this).attr('id', $(this).attr('id').replace(/map\_canvas\_.+?/g, 'map_canvas_' + i));
                 })
                 
-                $('.itinerary').each(function(a) {
-                $('.location', this).each(function(j) {
+                $('.location', this).each(function(j) {	
                 	$('input, textarea', this).each(function(k) {
-                		
                     	$(this).attr('name', $(this).attr('name').replace(/locations\[.+\]/g, 'locations[' + j + ']'))
-                   		locationSize = j;
+                   		locationSize[i] = j;
                     
                    		if($(this).hasClass("locationFieldText")){
                    			
-        					var autocomplete = new google.maps.places.Autocomplete(this);
-        					addAutocompleteListener(autocomplete, this, maps[a]);
+        					autocomplete = new google.maps.places.Autocomplete(this);
+        					input = this;
+        					addAutocompleteListener(autocomplete, this, maps[i]);
                 		}
                     })
-                })
-            	})
+               	})
+               	
+               	 maps[i] = new google.maps.Map(document.getElementById("map_canvas_"+i), mapOptions);
+                
+				if(locationSize[i] < 1){
+//     				pinLocation(autocomplete, input, maps[i]);
+    			} else {
+    				calculateDirection(0);
+    			}
+                
+
             })
         }
     	
        	function initialize() {
 
-           	renumber(this);
+           	renumber();
        		
-    		
-           	if(locationSize > 0){
-           		calculateDirection(maps[0]);
-           	}
          }
        	
     	$(window).load(function(){
@@ -138,11 +142,6 @@
     	});
 	
 		function addAutocompleteListener(autocomplete, input, map) {
-		
-			var infowindow = new google.maps.InfoWindow();
-			var marker = new google.maps.Marker({
-				map: map
-			});
 		
 			google.maps.event.addListener(autocomplete, 'place_changed', function() {
     			
@@ -154,23 +153,22 @@
 				$("input[name='"+latitudeFieldName+"']").val(place.geometry.location.lat());
 				$("input[name='"+longitudeFieldName+"']").val(place.geometry.location.lng());
 				
+				renumber();
 				
-				
-				if(locationSize < 1){
-    				pinLocation(infowindow, marker, autocomplete, input, map);
-    			} else {
-
-    				calculateDirection(map);
-    			}
     			
   			});
 		}
 		
-		function pinLocation(infowindow, marker, autocomplete, input, map) {
+		function pinLocation(autocomplete, input, map) {
+			
+			var marker = new google.maps.Marker({
+				map: map
+			});
+			
 			marker.setVisible(false);
 			input.className = '';
 			var place = autocomplete.getPlace();
-			if (!place.geometry) {
+			if (!place || !place.geometry) {
   				input.className = 'notfound';
   				return;
 			}
@@ -187,22 +185,22 @@
 
 		}
 		
-		function calculateDirection(map) {
+		function calculateDirection(index) {
 			
-			directionsDisplay.setMap(map);
+			directionsDisplay.setMap(maps[index]);
 			
-			if(locationSize < 1){
+			if(locationSize[index] < 1){
 				return;
 			}
 			
-			start = new google.maps.LatLng($("input[name='itineries[0].locations[0].latitude']").val(),$("input[name='itineries[0].locations[0].longitude']").val());
-			end = new google.maps.LatLng($("input[name='itineries[0].locations["+locationSize+"].latitude']").val(),$("input[name='itineries[0].locations["+locationSize+"].longitude']").val());
+			start = new google.maps.LatLng($("input[name='itineries["+index+"].locations[0].latitude']").val(),$("input[name='itineries["+index+"].locations[0].longitude']").val());
+			end = new google.maps.LatLng($("input[name='itineries["+index+"].locations["+locationSize+"].latitude']").val(),$("input[name='itineries["+index+"].locations["+locationSize+"].longitude']").val());
 			
 			var waypts = [];
 			
 			for (var i = 1; i < locationSize; i++) {
 				waypts.push({
-					location:new google.maps.LatLng($("input[name='itineries[0].locations["+i+"].latitude']").val(),$("input[name='itineries[0].locations["+i+"].longitude']").val()),
+					location:new google.maps.LatLng($("input[name='itineries["+index+"].locations["+i+"].latitude']").val(),$("input[name='itineries["+index+"].locations["+i+"].longitude']").val()),
 					stopover:true
 				});
 			}
@@ -256,7 +254,7 @@
      	</div>
      	<div class="col-lg-6">
 			<div id="container">
-				<div class="map-canvas" id="map-canvas-X"></div>
+				<div class="map-canvas" id="map_canvas_X"></div>
 			</div>
         </div>
 	</div>
