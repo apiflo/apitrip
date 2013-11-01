@@ -36,7 +36,7 @@
             className = "itinerary_template"
        	)
         
-        <a class="addItinerary btn btn-success"><i class="icon-plus"></i> Ajouter un itineraire</a>
+        <a class="addItinerary btn btn-success" style="display:none"><i class="icon-plus"></i> Ajouter un itineraire</a>
         
 		@_editTripButtons(id)
     }
@@ -56,12 +56,27 @@
 		  
 		var directionsService = new google.maps.DirectionsService();
 		var directionsDisplay = new google.maps.DirectionsRenderer();
+		
+		var functionLock = false;
+		var functionCallbacks = [];
+		var lockingFunction = function (callback) {
+		    if (functionLock) {
+		        functionCallbacks.push(callback);
+		    } else {
+		        $.longRunning(function(response) {
+		             while(functionCallbacks.length){
+		                 var thisCallback = functionCallbacks.pop();
+		                 thisCallback(response);
+		             }
+		        });
+		    }
+		}		
         
 		
     	$('.addItinerary').live('click', function(e) {
     		var parentItinerary = $(this).closest(":has(.itinerary)").find('.itinerary');
         	var template = $('.itinerary_template');
-        	parentItinerary.after('<div class="row itinerary">' + template.html() + '</div>');
+        	parentItinerary.after('<div class="row itinerary" id="itinerary_x">' + template.html() + '</div>');
         	renumber();
     	})
     	
@@ -89,7 +104,7 @@
             $('.location_template').remove();
         })
     	
-        var renumber = function() {
+        function renumber() {
     		
            	maps = new Array();
            	locationSize = new Array();
@@ -97,17 +112,29 @@
            	var input;
 
             $('.itinerary').each(function(i) {
-                $('input, textarea', this).each(function() {
-                    $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
-                })
+            	
+            	$(this).attr('id', $(this).attr('id').replace(/itinerary\_.+?/g, 'itinerary_' + i));
+            	
+            	renumberItinerary(i);
                 
-                $('.map-canvas', this).each(function() {
-                    $(this).attr('id', $(this).attr('id').replace(/map\_canvas\_.+?/g, 'map_canvas_' + i));
-                })
-                
-                $('.location', this).each(function(j) {	
-                	$('input, textarea', this).each(function(k) {
-                    	$(this).attr('name', $(this).attr('name').replace(/locations\[.+\]/g, 'locations[' + j + ']'))
+            })
+        }
+    	
+    	function renumberItinerary(i){
+    		
+    		var itinerary = $('#itinerary_'+i)
+    		
+            $('input, textarea', itinerary).each(function() {
+                $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
+            })  	
+            
+            $('.map-canvas', itinerary).each(function() {
+                $(this).attr('id', $(this).attr('id').replace(/map\_canvas\_.+?/g, 'map_canvas_' + i));
+            })
+
+            $('.location', itinerary).each(function(j) {	
+            	$('input, textarea', this).each(function(k) {
+                	$(this).attr('name', $(this).attr('name').replace(/locations\[.+\]/g, 'locations[' + j + ']'))
                    		locationSize[i] = j;
                     
                    		if($(this).hasClass("locationFieldText")){
@@ -119,17 +146,15 @@
                     })
                	})
                	
-               	 maps[i] = new google.maps.Map(document.getElementById("map_canvas_"+i), mapOptions);
-                
-				if(locationSize[i] < 1){
-//     				pinLocation(autocomplete, input, maps[i]);
-    			} else {
-    				calculateDirection(0);
-    			}
-                
-
-            })
-        }
+            maps[i] = new google.maps.Map(document.getElementById("map_canvas_"+i), mapOptions);
+            
+			if(locationSize[i] < 1){
+// 				pinLocation(autocomplete, input, maps[i]);
+			} else {
+				calculateDirection(i);
+			}               	
+    		
+    	}
     	
        	function initialize() {
 
@@ -187,18 +212,18 @@
 		
 		function calculateDirection(index) {
 			
-			directionsDisplay.setMap(maps[index]);
+			directionsDisplay.setMap(maps[0]);
 			
 			if(locationSize[index] < 1){
 				return;
 			}
 			
 			start = new google.maps.LatLng($("input[name='itineries["+index+"].locations[0].latitude']").val(),$("input[name='itineries["+index+"].locations[0].longitude']").val());
-			end = new google.maps.LatLng($("input[name='itineries["+index+"].locations["+locationSize+"].latitude']").val(),$("input[name='itineries["+index+"].locations["+locationSize+"].longitude']").val());
+			end = new google.maps.LatLng($("input[name='itineries["+index+"].locations["+locationSize[index]+"].latitude']").val(),$("input[name='itineries["+index+"].locations["+locationSize[index]+"].longitude']").val());
 			
 			var waypts = [];
 			
-			for (var i = 1; i < locationSize; i++) {
+			for (var i = 1; i < locationSize[index]; i++) {
 				waypts.push({
 					location:new google.maps.LatLng($("input[name='itineries["+index+"].locations["+i+"].latitude']").val(),$("input[name='itineries["+index+"].locations["+i+"].longitude']").val()),
 					stopover:true
@@ -223,7 +248,7 @@
 }
 
 @itineraryGroup(field: Field, className: String = "itinerary") = { 
-	<div class="row @className">
+	<div class="row @className" id="itinerary_x">
     	<div class="col-lg-6">	
 			<div>
     			<div class="well">   
@@ -248,10 +273,9 @@
         		)
 			</div>
         	<a class="addLocation btn btn-success"><i class="icon-plus"></i> Ajouter une place</a>
-		</div>
-  	</div>
-        		
-     	</div>
+			</div>
+  		</div>
+     </div>
      	<div class="col-lg-6">
 			<div id="container">
 				<div class="map-canvas" id="map_canvas_X"></div>
