@@ -52,11 +52,11 @@ public class TripController extends Controller {
 		return ok(views.html.trip.editTrip.render(id, editTripForm.fill(Trip.find.byId(id))));
 	}
 	
-	public static Result viewMyTrip(Long id) {
+	public static Result viewTrip(Long id) {
 		
-		Trip myTrip = Trip.find.byId(id);
+		Trip trip = Trip.find.byId(id);
 		
-		return ok(views.html.trip.viewMyTrip.render(myTrip));
+		return ok(views.html.trip.viewTrip.render(trip, Trip.isEditable(id, Application.getLocalUser(session()))));
 	}
 	
 

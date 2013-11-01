@@ -53,7 +53,7 @@ POST   	/createTrip    				controllers.TripController.doCreateTrip
 GET   	/myTrips/:id/edit    		controllers.TripController.editTrip(id: Long)
 POST   	/myTrips/:id/edit   		controllers.TripController.doEditTrip(id: Long)
 
-GET   	/perso/:id    				controllers.TripController.viewMyTrip(id: Long)
+GET   	/perso/:id    				controllers.TripController.viewTrip(id: Long)
 
 GET   	/requestpublish/:id   		controllers.TripController.doRequestPublishedTrip(id: Long)
 

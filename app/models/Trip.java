@@ -46,6 +46,12 @@ public class Trip extends Model {
 		return find.where().and(Expr.eq("author", author), Expr.isNull("requestPublishDate")).findList();
 	}
 	
+	public static boolean isEditable(Long id, final User author) {
+		Trip trip = find.ref(id);
+		
+		return trip.author.equals(author) && trip.requestPublishDate == null;
+	}
+	
 	public static List<Trip> findRequestPublishedTrip(final User author) {
 		return find.where().and(Expr.eq("author", author), Expr.and(Expr.isNotNull("requestPublishDate"),Expr.isNull("publishedDate"))).findList();
 	}
@@ -61,6 +67,11 @@ public class Trip extends Model {
 	public static void update(Trip trip) {
 		Ebean.saveAssociation(trip, "itineries");
 		Ebean.update(trip);
+	}
+	
+	public static boolean editable(final User author) {
+
+		return true;
 	}
 	
 	public Trip duplicate()  {

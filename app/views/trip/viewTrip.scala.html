@@ -1,11 +1,11 @@
-@(myTrip: Trip)
+@(myTrip: Trip, isEditable: Boolean)
 
 @import helper._
 
 @main("Visualiser le parcours") {
 
 	@_heading(myTrip.title)
-	@_viewTripButtons(myTrip)
+	@_viewTripButtons(myTrip, isEditable)
 	
 	<div id="login" class="row">
         <div class="col-lg-6">
