@@ -28,15 +28,15 @@
 		</div>
 	 		
         @repeat(editTripForm("itineries"), min = 1) { editItineryForm =>
-       		@itineraryGroup(editItineryForm)
+       		@_itineraryGroup(editTripForm, editItineryForm)
        	}
 
-        @itineraryGroup(
+        @_itineraryGroup(editTripForm, 
        		editTripForm("itineries[x]"),
             className = "itinerary_template"
        	)
         
-        <a class="addItinerary btn btn-success" style="display:none"><i class="icon-plus"></i> Ajouter un itineraire</a>
+        <a class="addItinerary btn btn-success"><i class="icon-plus"></i> Ajouter un itineraire</a>
         
 		@_editTripButtons(id)
     }
@@ -54,23 +54,6 @@
         };
         
 		  
-		var directionsService = new google.maps.DirectionsService();
-		var directionsDisplay = new google.maps.DirectionsRenderer();
-		
-		var functionLock = false;
-		var functionCallbacks = [];
-		var lockingFunction = function (callback) {
-		    if (functionLock) {
-		        functionCallbacks.push(callback);
-		    } else {
-		        $.longRunning(function(response) {
-		             while(functionCallbacks.length){
-		                 var thisCallback = functionCallbacks.pop();
-		                 thisCallback(response);
-		             }
-		        });
-		    }
-		}		
         
 		
     	$('.addItinerary').live('click', function(e) {
@@ -122,7 +105,9 @@
     	
     	function renumberItinerary(i){
     		
-    		var itinerary = $('#itinerary_'+i)
+    		var itinerary = $('#itinerary_'+i);
+    		
+    		$('h2', itinerary).html("Carte " + (i + 1));
     		
             $('input, textarea', itinerary).each(function() {
                 $(this).attr('name', $(this).attr('name').replace(/itineries\[.+?\]/g, 'itineries[' + i + ']'));
@@ -149,7 +134,7 @@
             maps[i] = new google.maps.Map(document.getElementById("map_canvas_"+i), mapOptions);
             
 			if(locationSize[i] < 1){
-// 				pinLocation(autocomplete, input, maps[i]);
+ 				pinLocation(autocomplete, input, maps[i]);
 			} else {
 				calculateDirection(i);
 			}               	
@@ -212,7 +197,10 @@
 		
 		function calculateDirection(index) {
 			
-			directionsDisplay.setMap(maps[0]);
+			var directionsService = new google.maps.DirectionsService();
+			var directionsDisplay = new google.maps.DirectionsRenderer();
+			
+			directionsDisplay.setMap(maps[index]);
 			
 			if(locationSize[index] < 1){
 				return;
@@ -247,57 +235,8 @@
     </script>
 }
 
-@itineraryGroup(field: Field, className: String = "itinerary") = { 
-	<div class="row @className" id="itinerary_x">
-    	<div class="col-lg-6">	
-			<div>
-    			<div class="well">   
-        		<a class="removeItinerary btn btn-danger pull-right"><i class="icon-trash"></i> Supprimer la carte</a>
-        
-        		<div class="locations">
-        
-        		@repeat(field("locations"), min = 1) { location =>
-        			@locationGroup(
-        				location("latitude"),
-        				location("longitude"),
-        				location("title"),
-        				location("description"))
-        		}
-            
-        		@locationGroup(
-        			field("locations[x].latitude"),
-        			field("locations[x].longitude"),
-        			field("locations[x].title"),
-        			field("locations[x].description"),
-            		className = "location_template"
-        		)
-			</div>
-        	<a class="addLocation btn btn-success"><i class="icon-plus"></i> Ajouter une place</a>
-			</div>
-  		</div>
-     </div>
-     	<div class="col-lg-6">
-			<div id="container">
-				<div class="map-canvas" id="map_canvas_X"></div>
-			</div>
-        </div>
-	</div>
-}
 
-@locationGroup(fieldLatitude: Field, fieldLongitude: Field, fieldTitle: Field, fieldDescription: Field, className: String = "location") = {
-	<div class="@className">
-    	@_locationField(
-        	fieldTitle
-        )
-        
-        <div class="form-group">
-       		<textarea class="form-control " name="itineries[x].locations[x].description" placeholder="Description">@fieldDescription.value</textarea>	
-        </div>
-        <input type="hidden" class="" name="itineries[x].locations[x].latitude" value="@fieldLatitude.value">	
-        
-        <input type="hidden" class="" name="itineries[x].locations[x].longitude" value="@fieldLongitude.value">	
 
-   </div>
- } 
+
     
     

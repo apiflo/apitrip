@@ -20,6 +20,8 @@ public class Itinerary extends Model {
 
 	public String title;
 	
+	public String description;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	public List<LocationPoint> locations = new ArrayList<LocationPoint>();
 

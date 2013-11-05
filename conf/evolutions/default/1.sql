@@ -7,6 +7,7 @@ create table itinerary (
   id                        bigint not null,
   trip_id                   bigint not null,
   title                     varchar(255),
+  description               varchar(255),
   constraint pk_itinerary primary key (id))
 ;
 
