@@ -73,8 +73,6 @@ public class TripController extends Controller {
         
         Trip.update(updatedTrip);
         
-        flash("success", "Computer " + tripForm.get().title + " has been updated");
-		
 		return redirect(routes.TripController.myTrips());
 	}
 	

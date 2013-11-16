@@ -80,7 +80,7 @@ public class Trip extends Model {
 		clone.author = this.author;
 		clone.title = this.title;
 		clone.description = this.description;
-		this.itineries = new ArrayList<Itinerary>();
+		clone.itineries = new ArrayList<Itinerary>();
 		for(Itinerary itineray : this.itineries){
 			clone.itineries.add(itineray.duplicate());
 		}
